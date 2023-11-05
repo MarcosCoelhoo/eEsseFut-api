@@ -29,7 +29,7 @@ const create = async (body) => {
 
   try {
     const id = generateUniqueID();
-    await sql`insert into times (author, title, date, hour, local, description, id) values (${author}, ${title}, ${date}, ${hour}, ${local}, ${description}, ${id})`;
+    await sql`insert into times (id, author, title, date, hour, local, description) values (${id}, ${author}, ${title}, ${date}, ${hour}, ${local}, ${description})`;
 
     return { message: 'Horário criado com sucesso', id };
   } catch (error) {
