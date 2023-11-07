@@ -7,4 +7,6 @@ router.get('/times', timesController.read);
 
 router.post('/times', timesController.create);
 
+router.delete('/times/:id', timesController.remove);
+
 module.exports = router;
