@@ -1,7 +1,7 @@
 require('dotenv').config();
-const postgres = require('postgres');
+const { createClient } = require('@supabase/supabase-js');
 
-const URL = process.env.PG_URL;
-const sql = postgres(URL);
+const { SUPABASE_URL, SUPABASE_KEY } = process.env;
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-module.exports = sql;
+module.exports = supabase;

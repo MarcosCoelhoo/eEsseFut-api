@@ -1,4 +1,4 @@
-const sql = require('../database');
+const supabase = require('../database');
 
 const generateUniqueID = () => {
   const timestamp = new Date().getTime();
@@ -8,37 +8,39 @@ const generateUniqueID = () => {
 };
 
 const read = async (idTime) => {
-  try {
-    if (idTime) {
-      const time = await sql`select * from times where id = ${idTime}`;
+  if (idTime) {
+    const { data, error } = await supabase
+      .from('times')
+      .select()
+      .eq('id', idTime);
 
-      return time;
-    }
-
-    const times = await sql`select * from times`;
-
-    return times;
-  } catch (error) {
-    console.log(error);
-    return false;
+    return { data, error };
   }
+
+  const { data, error } = await supabase.from('times').select();
+
+  return { data, error };
 };
 
 const create = async (body) => {
   const { author, title, date, hour, local, description } = body;
+  const id = generateUniqueID();
 
-  try {
-    const id = generateUniqueID();
-    await sql`insert into times (id, author, title, date, hour, local, description) values (${id}, ${author}, ${title}, ${date}, ${hour}, ${local}, ${description})`;
+  const bodyObj = { id, author, title, date, hour, local, description };
 
-    return { message: 'Horário criado com sucesso', id };
-  } catch (error) {
-    console.log(error);
-    return { erro: error };
-  }
+  const { error } = await supabase.from('times').insert(bodyObj);
+
+  return { data: { message: 'Horário criado com sucesso', id }, error };
+};
+
+const remove = async (id) => {
+  const { error } = await supabase.from('times').delete().eq('id', id);
+
+  return { data: { message: 'Horário deletado com sucesso', id }, error };
 };
 
 module.exports = {
   read,
   create,
+  remove,
 };
